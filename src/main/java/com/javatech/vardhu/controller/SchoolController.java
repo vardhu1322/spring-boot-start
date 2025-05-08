@@ -1,13 +1,19 @@
 package com.javatech.vardhu.controller;
-import com.javatech.vardhu.model.School;
 
 import com.javatech.vardhu.Service.SchoolService;
+import com.javatech.vardhu.model.ResponseDto;
+import com.javatech.vardhu.model.School;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
+@Tag(name = "school controller",description = "This is used to perform crud operation on school")
+@RequestMapping(value = "/school")
 public class SchoolController {
 
 
@@ -24,39 +30,43 @@ public class SchoolController {
 //    public ResponseEntity<?> getSchoolDetailsWith(@PathVariable int SchoolId) {
 //        return new ResponseEntity<>(schoolService.findSchoolById(), HttpStatus.FOUND);
 //    }
-    @GetMapping(value = "/school")
+    @Operation(summary = "Fetch the school details by school id",description = "fetch the school details")
+    @GetMapping(value = "/{schoolId}")
     public ResponseEntity<?> GetSchoolDetails() {
-        return new ResponseEntity<>(schoolService.findSchoolById(1), HttpStatus.OK);
+        return new ResponseEntity<>( ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("fetch data").data(schoolService.findSchoolById(1)).build(),HttpStatus.OK);
+
     }
 
 //    @GetMapping(value = "/school/{schoolId}")
 //    public ResponseEntity<?> GetSchoolDetailsPath(@PathVariable int schoolId) {
 //        return new ResponseEntity<>(schoolService.findSchoolById(schoolId), HttpStatus.OK);
 //    }
-
-    @GetMapping(value = "/school1")
+    @Operation(summary = "Fetch the school details by school id",description = "fetch the school details")
+    @GetMapping
     public ResponseEntity<?> GetSchoolDetailsParam(@RequestParam(value = "schoolId", required = false) int schoolId) {
         return new ResponseEntity<>(schoolService.findSchoolById(schoolId), HttpStatus.OK);
 
     }
 
-    @PostMapping("/school")
-    public School CreateSchool1(@RequestBody School school) {
-        return schoolService.saveSchool(school);
+    @PostMapping
+    public ResponseEntity<?> CreateSchool(@RequestBody School request) {
+        return new ResponseEntity<>(ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("Update Succesfully").data(schoolService.saveSchool(request)).build(),HttpStatus.OK);
 
     }
 
-    @DeleteMapping(value="/school/{schoolId}")
+    @DeleteMapping(value="/{schoolId}")
     public ResponseEntity<?> deleteSchool(@PathVariable int schoolId) {
-        return new ResponseEntity<>(schoolService.deleteSchool(schoolId), HttpStatus.OK);
+
+        return new ResponseEntity<>( ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("Record Deleted").data(schoolService.deleteSchool(schoolId)).build(),HttpStatus.OK);
     }
 
-    @PutMapping("/school")
+    @PutMapping
     public ResponseEntity<?> UpdateSchool(@RequestBody School school) throws Exception {
-        return new ResponseEntity<>(schoolService.updateSchool(school), HttpStatus.OK);
+        return new ResponseEntity<>( ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("Record updated").data(schoolService.updateSchool(school)).build(),HttpStatus.OK);
 
     }
 
 }
+
 
 

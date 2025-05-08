@@ -1,20 +1,38 @@
 package com.javatech.vardhu.Service.impl;
 
+import com.javatech.vardhu.Exception.DataNotFoundException;
 import com.javatech.vardhu.Service.SchoolService;
+import com.javatech.vardhu.entity.SchoolY;
 import com.javatech.vardhu.model.School;
+import com.javatech.vardhu.repository.SchoolRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 @Service
 public class SchoolServiceImpl implements SchoolService {
+
+    @Autowired
+    SchoolRepository schoolRepository;
+
     @Override
     public School saveSchool(School school) {
-        School schoolResponse=school;
-        schoolResponse.setId(123);
-        return schoolResponse;
+        SchoolY school1 = new SchoolY();
+        school1.setName(school.getName());
+       school1.setAddress(school.getName());
+       school1.setDressCodeColor(school.getDressCodeColor());
+       school1.setCreatedBy("Admin");
+       school1.setCreatedDate(Date.valueOf(LocalDate.now()));
+        schoolRepository.save(school1);
+        school.setId(school1.getId());
+        return school;
     }
 
     @Override
@@ -27,12 +45,13 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public School findSchoolById(int schoolId) {
         School school = new School();
-        school.setId(1);
+        school.setId(1L);
         school.setName("ris");
         String[] colors={"red","blue"} ;
         school.setDressCodeColor(Arrays.asList(colors));
         school.setAddress("BMC");
-        return school;
+        throw new DataNotFoundException("School Data not found for Id"+schoolId);
+
     }
 
     @Override
