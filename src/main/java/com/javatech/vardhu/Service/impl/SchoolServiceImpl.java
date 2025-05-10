@@ -3,6 +3,7 @@ package com.javatech.vardhu.Service.impl;
 import com.javatech.vardhu.Exception.DataNotFoundException;
 import com.javatech.vardhu.Service.SchoolService;
 import com.javatech.vardhu.entity.SchoolY;
+import com.javatech.vardhu.mapper.SchoolMapper;
 import com.javatech.vardhu.model.School;
 import com.javatech.vardhu.repository.SchoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.Optional;
 
 
 @Service
@@ -44,22 +42,28 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public School findSchoolById(int schoolId) {
-        School school = new School();
-        school.setId(1L);
-        school.setName("ris");
-        String[] colors={"red","blue"} ;
-        school.setDressCodeColor(Arrays.asList(colors));
-        school.setAddress("BMC");
-        throw new DataNotFoundException("School Data not found for Id"+schoolId);
+        Optional<SchoolY> optionalDate = schoolRepository.findByIdAndIsDeleted((long ) schoolId,0);
+        if(optionalDate.isPresent()){
+            return SchoolMapper.maptoSchool(optionalDate.get());
+        }else
+            throw new DataNotFoundException("record Not Found");
 
     }
 
     @Override
-    public Map deleteSchool(int schoolId) {
-        Map<String,Object>mp=new HashMap<>();
-        mp.put("id",schoolId);
-        mp.put("Message","Delete");
-        return mp;
+    public void deleteSchool(int schoolId) {
+
+        //check where schooid exist or not if exist then delete else throw error
+        Optional<SchoolY> optionalDate = schoolRepository.findByIdAndIsDeleted((long ) schoolId,0);
+       if(optionalDate.isPresent())
+       {
+           SchoolY schoolY=optionalDate.get();
+           schoolY.setIsDeleted(1);
+           schoolRepository.save(schoolY);
+
+       }else
+           throw new DataNotFoundException("record Not Found");
+
 
     }
 

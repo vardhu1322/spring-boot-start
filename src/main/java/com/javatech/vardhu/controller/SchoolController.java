@@ -3,7 +3,6 @@ package com.javatech.vardhu.controller;
 import com.javatech.vardhu.Service.SchoolService;
 import com.javatech.vardhu.model.ResponseDto;
 import com.javatech.vardhu.model.School;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,21 +29,21 @@ public class SchoolController {
 //    public ResponseEntity<?> getSchoolDetailsWith(@PathVariable int SchoolId) {
 //        return new ResponseEntity<>(schoolService.findSchoolById(), HttpStatus.FOUND);
 //    }
-    @Operation(summary = "Fetch the school details by school id",description = "fetch the school details")
-    @GetMapping(value = "/{schoolId}")
-    public ResponseEntity<?> GetSchoolDetails() {
-        return new ResponseEntity<>( ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("fetch data").data(schoolService.findSchoolById(1)).build(),HttpStatus.OK);
-
-    }
+//    @Operation(summary = "Fetch the school details by school id",description = "fetch the school details")
+//    @GetMapping(value = "/{schoolId}")
+//    public ResponseEntity<?> GetSchoolDetails() {
+//        return new ResponseEntity<>( ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("fetch data").data(schoolService.findSchoolById(1)).build(),HttpStatus.OK);
+//
+//    }
 
 //    @GetMapping(value = "/school/{schoolId}")
 //    public ResponseEntity<?> GetSchoolDetailsPath(@PathVariable int schoolId) {
 //        return new ResponseEntity<>(schoolService.findSchoolById(schoolId), HttpStatus.OK);
 //    }
-    @Operation(summary = "Fetch the school details by school id",description = "fetch the school details")
+
     @GetMapping
-    public ResponseEntity<?> GetSchoolDetailsParam(@RequestParam(value = "schoolId", required = false) int schoolId) {
-        return new ResponseEntity<>(schoolService.findSchoolById(schoolId), HttpStatus.OK);
+    public ResponseEntity<?> GetSchool(@RequestParam(value = "schoolId", required = false) int schoolId) {
+        return new ResponseEntity<>( ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("fetch data successfully").data(schoolService.findSchoolById(schoolId)).build(),HttpStatus.OK);
 
     }
 
@@ -56,8 +55,9 @@ public class SchoolController {
 
     @DeleteMapping(value="/{schoolId}")
     public ResponseEntity<?> deleteSchool(@PathVariable int schoolId) {
+        schoolService.deleteSchool(schoolId);
 
-        return new ResponseEntity<>( ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("Record Deleted").data(schoolService.deleteSchool(schoolId)).build(),HttpStatus.OK);
+        return new ResponseEntity<>( ResponseDto.builder().statusCode(HttpStatus.OK.value()).message("Record Deleted").build(),HttpStatus.OK);
     }
 
     @PutMapping
