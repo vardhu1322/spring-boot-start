@@ -13,6 +13,7 @@ import java.util.Date;
 @Setter
 @MappedSuperclass
 public class BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;

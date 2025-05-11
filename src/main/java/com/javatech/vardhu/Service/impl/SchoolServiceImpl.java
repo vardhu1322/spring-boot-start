@@ -35,9 +35,17 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public School updateSchool(School school) throws Exception {
-        if (school.getId()==0)
-            throw new Exception("Id not Exist");
-        return school;
+        Optional<SchoolY> optionalDate = schoolRepository.findByIdAndIsDeleted(school.getId(),0);
+        if(optionalDate.isPresent()){
+            SchoolY schoolY=optionalDate.get();
+            if (!school.getName().isEmpty())
+                schoolY.setName(school.getName());
+            schoolY.setUpdatedBy("Admin");
+            schoolY.setUpdatedDate(Date.valueOf(LocalDate.now()));
+            schoolRepository.save(schoolY);
+            return SchoolMapper.maptoSchool(schoolY);
+        }else
+            throw new DataNotFoundException("Record Not Found");
     }
 
     @Override
@@ -46,7 +54,7 @@ public class SchoolServiceImpl implements SchoolService {
         if(optionalDate.isPresent()){
             return SchoolMapper.maptoSchool(optionalDate.get());
         }else
-            throw new DataNotFoundException("record Not Found");
+            throw new DataNotFoundException("Record Not Found");
 
     }
 
